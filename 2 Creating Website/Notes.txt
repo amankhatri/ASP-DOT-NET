@@ -1,0 +1,27 @@
+A solution is a collection of projects, I can click on solution and add one more project to it. 
+A solution has sln extension
+where as the project has extension of .csproj
+
+Webforms have extension of aspx.
+you can bring up toolbox to add buttons or panels, this option is in view menu
+
+properties windows is used to change properties of webpage content , we can change the properties of button like names font or anything, if it is not available you can bring it up from view menu
+
+Asp .net creates a a default webform automatically, its extension is .aspx. so a webform has three modes, Design Mode (where you can change or edit in design mode ) or source mode  or you can see the split between design and source mode
+
+A webform has a code behind it , you can bring up the code by right clicking in anywhere in defaut.aspx and selecting "show code option" It opens up default.aspx.cs file
+
+NOTE: to bring up or to add code of the Button or any element of tool box in default.aspx.cs file, you should double click the element, in this case, the button, in Design mode of Default.aspx. This would add a method related to the button in Default.aspx.cs where you can add the functionality to the button
+
+Default.aspx.cs (code behind file), This contains the code that user writes, forexample on the page load what should happen, or what would happen if button "click" is clicked.
+
+
+Default.aspx.designer.cs: when we drag and drop button in default.aspx, the auto generated code is added to Default.aspx.designer.cs . You should not change the code in the designer file, because that code might later be modified by c#. 
+
+in Default.aspx we have a line
+<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="WebApplication1._Default" %>
+which is called the page directive and the attribute CodeBehind tells the what code it related to the file
+A webform is associated with its codefile using @pagedirective 
+which means every page or webform we create will have the code associated with it and all the files will have corresponding page directive. 
+
+A weform's HTML can be edited either in Source or Design mode. You can choose split mode, which shows both the DEsign and the Sources at the same time. 
