@@ -1,0 +1,13 @@
+stateless nature of HTTP protocol 
+How a webform is processed 
+what is viewstate
+the role of viewstate in ASP.net
+primary difference between ASP.NET sever controls and HTML Controls
+
+Webapplication works on HTTP protocol. HTTP protocol is stateless protocol, meaning it does not retain state between user requests example
+
+Web forms live for barely a moment. When a request is received
+1) An instance of request webform is create
+2) Events processed
+3) Generates the HTML and Posted to the client
+4) The webform is immediately destroyed
