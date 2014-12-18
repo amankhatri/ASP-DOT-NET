@@ -1,0 +1,134 @@
+View State:
+Goals 
+1) Stateless Nature of HTTP protocol
+2) How a webform is processed
+3) What is viewstate 
+4) The role of viewstate in ASP.net
+5) Primary Difference between ASP.NET server controls and HTML controls.
+
+View State
+Web applications work on HTTP protocol. HTTP protocol is a stateless protocol, meaning it does not retain state between user requests. 
+Webform live for barely a moment. When a request is recieved 
+	1) An instance of the requested webform is created
+	2) Events Processed
+	3) Generates the HTML & posted to the client
+	4) The webform is immediately destroyed
+--------------------Code-----------------------------
+ public partial class WebForm1 : System.Web.UI.Page
+    {
+        int ClicksCount = 0;
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                TextBox1.Text = "0";
+            }
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            ClicksCount = ClicksCount + 1;
+            TextBox1.Text = ClicksCount.ToString();
+        }
+
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+  now here in the code we can see everything is a class, any webform , or a button or a text box is a seperate class
+  so when I ask the page to be redered by entering the adderes http://localhost:1374/WebForm1.aspx 
+  it is a get request and when we click the button it is a post request , known as postback
+
+  Reason why the text of textbox not incrementing for more than one count.
+  When ever we request to go to a link it is a reqeuest to get the specific page and when we click the button we post the request or the data to server, which is postback. 
+  everytime we send a get request a new instance of the class is created. All the codes get changed to dll file or the assembly file in case of web application, forexample the entire viewstate project has a dll file in soultion/project/bin folder . Everytime we send a get request a assembly program it runs the dll file and creates new instances of the classes. 
+  
+  so as soon as we click the click me button the post request is send to the server and server increments the count, after increamenting the count every instance of that class is destroyed, and hence when you re click the button, the count again starts from 0 and you see a 1 in the text box again.
+--------------webform2 View State--------------
+  To make server remember the state of the form we can use ViewState[" string key"]
+ViewState takes care of multiple request given to same page.
+
+when i type the url of http://localhost:something/webform2.html and press enter we are making a get request for webform2. 
+a) This creates an instance of the class webform2 and ClicksCount is set to 1.
+b) Page_load gets executed
+c) since its not a postback request TextBox1.Text is set to zero
+d) Then it doesn't execute button1_click method because it is not a postBack and the code sends the html and destroys the webform immediately that is why we see 0 in text file.
+Now when I am on the webform2.html page and I click the "Click Me " button, 
+a) an instance of Webform2 is created and ClicksCount is set to 1;
+b) it goes into Page_Load method which does not do anything in this case , that is if condition is not executed because it is a postBack request.
+c) It then goes to the next method which is Button_Click1 and checks if ViewState["Click"] is not null (remember initially for the firsttime when you hit the button ViewState["Clicks"]= null) and it fails so it doesn't go inside the if condition and sets the Textbox1.txt to "1"
+and now we store the clicksCount in viewState["Clicks"] variable. 
+After this step the html goes to the browser and displays one, after this process the entire webform dies except the ViewState variabe. 
+Now when we press the click me button again the webform2 instance is recreated however this time when the code exectues Button1_click the variable ViewState["Clicks"]  is not null, and hence it goes in the if statement and the text box is sent to browser with the vaue of 2.
+The value of ClicksCount will travel between the client and the server hidden in ViewState["clicks"] field.
+now if you go view source bage on webform2.html you will see a hidden field. 
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE0MDM4MzYxMjMPFgIeBkNsaWNrcwIKFgICAw9kFgICAQ8PFgIeBFRleHQFAjEwZGRkFVOzWokJt7/r+liKTq5IYLI9qzR416pRLsvsm6/Qmzk=" />
+this hidden field stores the value in some encoding and is transfered between client and the server during each request. 
+
+As webform2.html recieves a gets or a posts request several events takes place like loading a page (page_load) and clicking the button(button_click). but there is event which occurs even befor page_load, which is page_initialze , so during page_intialization , the view state restore occurs, meaning that the variable, ViewState["click"] gets updated. 
+So if we want to retain the value of a variable between the client and server request for a postback event we can use ViewState field
+
+Summary Click the button now, and the value gets incremented everytime we click. So how is this possible now?
+It is possible because, we are using the ViewState variable Clicks to preserve the data between requets. The ViewState data travels with every requeset and response between the client and the web server. IT travels throw hidden field which is 64 base  encoded. 
+
+--------------------- Webform3, internal view state variable for the server controls like text box --------
+ public partial class WebForm3 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                TextBox1.Text = "0";
+            }
+
+        }
+
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            int ClicksCount = Convert.ToInt32(TextBox1.Text) + 1;
+            TextBox1.Text = ClicksCount.ToString();
+
+        }
+
+  	}
+now if we make certain changes and don't use a viewstate variable in webform3.aspx.cs file and go to url http://localhost:1374/WebForm3.aspx
+we notice that the textbox text increments the count without view state variable being explicitly declared in the webform3.axpx.cs file 
+
+Upon clicking the button, the value gets incremented correctly as expected. This is possible because, TextBox1 is an asp.net server control, that uses viewstate internally, to preserve data across postbacks. 
+
+Because web forms have very short lifetimes, ASP.net takes special steps to preserve the data entered in the controls on a webform. Data entered in controls is sent with each request and restored to controls in Page_init. The data in these controls is then available in the page_Load(), Button_Click(), and many more events that occur after Page_Init() event. 
+All asp.net controls user hidden view statefield. 
+
+
+
+
+-----------------------Webform4 server controls demo---
+ASP.net server controls retains state
+HTML controls do not retain state across post backs
+An HTML control can be converted in ASP.NET server control, by adding runat="server" attribute in the HTml source as snown below
+<input id="Text1" runat="server" type="text" />
+viewState data is serialized into base64-encoded strings, and is stored in Hidden input field.
+if we look  into the toolbox we have different sections 
+1) Standard : contains all the standard asp.net server control
+2) Data
+3) Validation
+4) Navigation
+5) Login
+6) WebParts
+7) AJAX Extensions
+8) Dynamic Data
+9) Reporting
+10) HTML contains standard HTML controls, which are not associated with asp.net and dose not have hidden viewstate
+Now if I log on to
+http://localhost:1374/WebForm4.aspx and fill in some text in ASP.net Control and HTML Control and click the button I see that the text in HTML control box disappears proving that the state is not retained. 
+
+Converting an HTML control to asp.net control by using runat="server"
+
+
+
