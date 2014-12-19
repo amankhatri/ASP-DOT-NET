@@ -1,0 +1,137 @@
+In asp web application events can occur at 3 levels
+1)At the Application Level(Example : Application Start, Application end , session start)
+2)At the Page Level(Example: Page Load, page unload)
+3)At the Control Level(Example: Button Click)
+
+ViewState variables are used to preserve data across page postback. by default, ViewState of one webform is not available in another webform. For example if i create a viewstate variable in webform1 i can only access it in webform1, it would not be avaiable in webform2 or any other webform without using the techniques given below
+
+Techniques to send data from one Webform to another
+1)QueryStrings
+2)Cookies
+3)SessionState
+4)ApplicationState
+
+Constrationg on Session state variables and Application state variables. 
+
+Session state variables are avaiable across all pages, but only for a single session. you can think of Session variables like single-user global data. That is for a given user across all the webpages/webforms you can access session variables. Only the current session has access to its Session state. 
+
+Application State Variables are available across all pages and across all sessions.  you can think of
+Application State variables are like multi-user globaldata. All sessions can read and write Application State Variables. 
+
+In ASP.NET web application, Global.asax file contains the application level events. In general, Application events are used to initialize data that needs to be available to all the current sessions of the Application. Whereas, ,session events are used to initialize data that needs to be available only for a given individual session, but not between multiple sessions.
+
+The code for Application State variables and sessions is in Global.asax file and this is how it looks like: 
+ public class Global : System.Web.HttpApplication
+    {
+        void Application_Start(object sender, EventArgs e)
+        {
+            // Code that runs on application startup, this event gets fired when the application is not already running and the first request for the application reaches the server. At the same time loads the application assembly to the memory.
+        }
+        void Application_End(object sender, EventArgs e)
+        {
+            //  Code that runs on application shutdown, if the last session of the application has expired, the Application_End event is fired. 
+        }
+        void Application_Error(object sender, EventArgs e)
+        {
+            // Code that runs when an unhandled error occurs it gets fired when there is unhandled exception. We use Application_Error event in real life to handle unhandled exceptions by loging the erros into a database.
+        }
+        void Session_Start(object sender, EventArgs e)
+        {
+            // Code that runs when a new session is started, it gets fired whenever a new user, visits the website. A session can be considered as a unique instance of a browser . i
+        }
+        void Session_End(object sender, EventArgs e)
+        {
+            // Code that runs when a session ends. 
+            // Note: The Session_End event is raised only when the sessionstate mode
+            // is set to InProc in the Web.config file. If session mode is set to StateServer 
+            // or SQLServer, the event is not raised.
+            whenever the session of a user times out , session_end event gets fired. session timeout can be configured in web.config file using timeout attribute
+        }
+    }
+Application Event, examples are Application_Start, Application_End, Application_Error,
+Sedssion Events, examples are Session_Start, Session_End. 
+In genereal application events are used to initialize data that will be avaiable for all the sessions of the entire application where as session application is only initialized for a given individual session.
+----------------------Edited code for explaination of Application Events and SessionEvents 
+This code corresponds to global.asax
+/*The goal of this program is to figure out how many users are using this application. Number of users is demonstrated by the number of sessions running */
+ public class Global : System.Web.HttpApplication
+    {
+
+        void Application_Start(object sender, EventArgs e)
+        {
+            // Create Application state variables, These two are application level variables i.e application state variables
+            //Application State Variables are accessible to all sessions.
+            Application["TotalApplications"] = 0;
+            Application["TotalUserSessions"] = 0;
+            //Increment TotalApplications by 1
+            Application["TotalApplications"] = (int)(Application["TotalApplications"]) + 1;
+        }
+        void Application_End(object sender, EventArgs e)
+        {
+        }
+        void Application_Error(object sender, EventArgs e)
+        {
+        }
+        void Session_Start(object sender, EventArgs e)
+        {
+            // Increment TotalUserSessions by 1
+            Application["TotalUserSessions"] = (int)(Application["TotalUserSessions"]) + 1;
+        }
+        void Session_End(object sender, EventArgs e)
+        {
+            // decrement TotalUserSessions by 1 when session is ended. Ending of session is determined by timeout attribute // in web.config file.
+            Application["TotalUserSessions"] = (int)(Application["TotalUserSessions"]) - 1;
+        }
+    }
+
+------------------This part of code goes in Webform1.aspx.cs file
+In this webform we are just retriving the data of applications and sesions
+ public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            Response.Write("Number of Applications: " + Application["TotalApplications"]);
+            Response.Write("<br/>");
+            Response.Write("Number of Sessions: " + Application["TotalUserSessions"]);
+        }
+    }
+
+ when we run the application for the first time in chrome it displays 
+ Number of Applications: 1
+Number of Sessions: 1
+and if you simlutaneously start another session by opening the webform1 in mozilla you see
+ Number of Applications: 1
+Number of Sessions: 2
+However when you open another tab or another window of chrome simultaneously both the windows display the same thing: 
+ Number of Applications: 1
+Number of Sessions: 1
+Whenever we open up a browser and type alink in browser, the browser will have a unique session id which will be sent to the server, and based on that session id the webserver will know the number of users. 
+But when you open two different windows of same browser the number of session does change this is because of the cookies.
+so session id is shared 
+everytime i close the all the brower windows and restart the browser before the  previous session ends it will give me the same id (pretty much it depends on the time out) where as if i wait and then restart the browser session id won't be incremented due to timeout attribute
+
+What is a session in a web application?
+A session is a unique instance of the browser. A single user can have multiple sessions, by visiting your application, with multiple instances of the browser running with a different session-id on his machine. 
+
+How to get a new session-id and force the Session_Start() event to execute?
+1) Close the existing browser window and then open a new instance of the browser
+2) Open a new instance of a different browser
+3) Use cookie-less sessions in web.config file
+<sessionState mode = "InProc" cookieless="true"></sessionState>
+By default asp.net uses cookies
+now if I open a url 
+http://localhost:4440/webform1.aspx it changes to 
+http://localhost:4440/(S(kwelbjyottteexlkxlxcwzav))/webform1.aspx 
+and is in format localhost/sessionId/webform1.aspx this results in 
+ Number of Applications: 1
+Number of Sessions: 1
+
+if i place the link http://localhost:4440/(S(kwelbjyottteexlkxlxcwzav))/webform1.aspx  with same session id in another window of same browser i get
+ Number of Applications: 1
+Number of Sessions: 1
+because both of the browsers are running of same session id 
+where as if i open up a new brower with 
+http://localhost:4440/webform1.aspx 
+the new session id is generated and we get
+ Number of Applications: 1
+Number of Sessions: 1
