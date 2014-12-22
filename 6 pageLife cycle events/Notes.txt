@@ -1,0 +1,90 @@
+From 4th commit we know that events can occur at 3 levels in an asp.net application.
+1) At the application level (Example- session_start event in global.asax)
+2) At the page or webform level (Example- page_load)
+3) At the control level (Example - selected index changed event of a dropdownlist)
+
+This section is about page level controls 
+Web applications work on a stateless protocol. Everytime a request is made for a webform, the follwing sequence of events occur.
+1) Web Application creates an instance of the requested webform.
+2) Process the events of the webform.
+3) Generate the HTML, and sends the HTML back to the requested client.
+4) The webform gets destroyed and removed from the memory.
+
+The following are some of the commonly used events in the life cycle of an asp.net webform. These events are shown in order of occurrence, except for,Error event, which occurs only if there is an unhandled except.
+---------------------------------Page Level Events----------------------------------------------------------------
+Event Name: PreInit 
+Description: As the name suggests, this event happens just before page initialzation event starts. IsPostBack, IsCallback and IsCrossPagePostBack properties are at this stage. This event allows us to set the master page and theme of web application dynamically. Most of the time we set the master page and the theme statically at design time, however, we can set up master page and the theme dynamically at PreInit event. Anytime we work with Dynamic control we use PreInit Event. Dynamic Control means, we can create buttons, text boxes and other stuff while the application is running. PreInit is extensively used when working with dynamic controls.
+
+Event Name: Init
+Decription: Page Init, event occurs after the Init event, of all the individual controls on the webform. Use this event to read or initialize control properties. The server controls are loaded and initialized from the Web form's view state at this stage. 
+
+Event Name: InitComplete
+Description: As the name says, this event gets raised immediately after page initialization.
+
+Event Name: PreLoad
+Description: Happens just before the PageLoad event. 
+
+Event Name: Load
+Description: PageLoad event, occurs before the load event of all the individual controls on that webform.
+------------------------------End of Page Level event ----------------------------------------------------------
+Event Name: Control Events
+Description:  After the PageLoad event, the control events like button's click, dropdownlist's selected index changed events are raised
+
+Event Name: Load Complete
+Description: This event is reaised after the control events are handled.
+
+Event Name: PreRender
+Description: This event is raised just before the rendering stage of the page.
+
+Event Name: PreRenderComplete
+Description: Raised immediately after the PreRender event. At this stage page is already with the client and is about to be destroyed 
+
+Event Name: Unload
+Description: Raised for each control and then for the page. At this stage the page is, unloaded from memory. This is because webfrom works as stateless 
+
+Event Name: Error
+Description: This event occurs only if there is an unhandled exception. This occurs only when there is unhandled exception. This event is used to log errors in a log file so that it folks can deal with it.
+
+
+Note: Init event occurs after the Init event of all controls, where as Load even occurs before the load event of all the individual controls on that webform 
+so, this is how the serial order of even in this case is
+1) Load Event
+2) Init event of all controls
+3) The Init event itself.
+
+This code goes in webform1.aspx.cs
+Events get fired in this order:
+Here are all the events and a tiny code with goes with these events
+        protected void Page_PreInit(object sender, EventArgs e)
+        {
+	        Response.Write("Page_PreInit" +"<br/>");
+        }
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Response.Write("Page_Init" + "<br/>");
+        }
+        protected void Page_InitComplete(object sender, EventArgs e)
+        {
+           Response.Write("Page_InitComplete" + "<br/>");
+        }
+        protected void Page_PreLoad(object sender, EventArgs e)
+        {
+           Response.Write("Page_PreLoad" + "<br/>");
+        }
+        protected void Page_LoadComplete(object sender, EventArgs e)
+        {
+            Response.Write("Page_LoadComplete" + "<br/>");
+        }
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreRender" + "<br/>");
+        }
+        protected void Page_PreRendercomplete(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreRendercomplete" + "<br/>");
+        }
+        protected void Page_Unload(object sender, EventArgs e)
+        {
+            //we can't use response because all the processing of form was completed before this step
+           // Response.Write("Page_PreRendercomplete" + "<br/>"); is of no use
+        }
