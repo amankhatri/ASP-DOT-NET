@@ -1,0 +1,162 @@
+In commit 4 we have discussed that events scan occur at 3 levels 
+1) At the application level (Example- Session_Start event in global.asax)
+2) At the page or webform Level (Example - Page_Load, Page_Unload, )
+3) At the control level (Example - Selected Index changed event of a dropdownlist, click event of button control, we can find all the control level sever Tool box)
+ALL controls are available in toolbox under seperet sections like standard controls, validation controls etc
+
+Asp.NET server controls, such as Textbox, Button, and DropDownList has their own events. We have a set of asp.net validation controls, that has validation events. The events that these controls expose, can be broadly divided into 3 categories.
+1) Postback Events - These events submit the Web Page , immediately to the server for processing. Click event of a button control is an example for postback event.
+Let us work out an example
+Terminology -- when you double click the button which you created, the event handler will generate a method for Button1_click in webform1.aspx.cs file.
+As soon as I click the button the webform will be immediately submited to the server for processing, 
+then server creates an instance of this webform, processes the page_level events, and the control level events( like the button click) and generates the HTML which is sent to the client, after this step the webform is destroyed. 
+------------------------Code for post back events - web form 1.aspx.cs------------------------------------------------------
+ public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Clicked"); // this is reffered to as response stream.
+        }
+    }
+---------------------------- End of code for post back events-----------------------------------------
+
+2) Cached events - These events are saved in the page's viewstate to be processed when a postback events occurs. TextChanged event of TextBox control, and SelectedIndexChanged event of aDropDownList control are examples of cached events. Cached events can be converted into popstback events, by setting the AutoPostBack property of the control to true.
+-----------------------Code for Cached Events - CachedEvents.aspx.cs -------------------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Clicked");
+        }
+
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            Response.Write("TextChanged");
+        }
+
+
+---------------------------- End of code for Cached events-----------------------------------------
+NOw with the code up let us run the cachedEvents.aspx.cs file and click the button, and we notice that the BUtton Clicked appears on the HTML page as a response of clicking button. Now let use write "some text" in the text box, and when we click anywhere on the page other than on the button, the page doesn't get submitted. Which means now the TextChanged Event is now cached in the viewstate of the cachedevents.aspx page. And when we click the button, the cached event will be fired when the PostBack occurs, until then it is stored in viewState of page.
+Try doing this 
+1) add some random thing to the textbox  click anywhere on the page but the button, now delete the text from the text box, and press the button, you will notice that server somehow knows that there was something in the textbox and it gives you the html which says text changed button clicked as a resonse.
+
+Now if we do not want the button to be click in order to fire a response to cached event, it is possible and we can change the property of the text box whichis called AutoPostBack to true. Here we are converting cached back event to postback event.
+-----------------------------End of Cached Event explaination --------------------------------------------------------------
+3) Validation events - These occur on the client, before the page is posted back to the server. All Validation controls use these type of events. These types or controls are use to verify the clients reponse on the webform
+Validation events are used to validate control level events like button click or a text box . 
+----------------------------- Code for Validation Control Events ----------------------------------------------------------
+ public partial class ValidationEvent : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            Response.Write("Text Changed" + "<br/>");
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Clicked" + "<br/>");
+        }
+    }
+----------------------------- End of code for validation Control Events ---------------------------------------------------
+
+Right click the "RequiredFieldValidator" which we are using and go to its properties, change the  "ControlToValidate" attribute to "TextBox1" which is avaiable in dropdown list.
+Now if we click the button without entering anything in the textbox, RequiredFieldValidator is fired. This is because the of the validation event being fired on the client event before anything goes to the server. This is because of the javascript which runs on behind the form in the web browser. 
+---------------------------------------------------- End of Explaination for Validation Event -------------------------
+ Now let us fire all the events from pre_INIT to page unload in a new code including other events like textbox , validation events
+ --------------------------------------CODE BEGINS for all events--------------------------------------------
+  protected void Page_PreInit(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreInit" + "<br/>");
+        }
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Response.Write("Page_Init" + "<br/>");
+        }
+        protected void Page_InitComplete(object sender, EventArgs e)
+        {
+            Response.Write("Page_InitComplete" + "<br/>");
+        }
+        protected void Page_PreLoad(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreLoad" + "<br/>");
+        }
+         protected void Page_Load(object sender, EventArgs e)
+        {
+            Response.Write("Page_Load" + "<br/>");
+        }
+        protected void Page_LoadComplete(object sender, EventArgs e)
+        {
+            Response.Write("Page_LoadComplete" + "<br/>");
+        }
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreRender" + "<br/>");
+        }
+        protected void Page_PreRendercomplete(object sender, EventArgs e)
+        {
+            Response.Write("Page_PreRendercomplete" + "<br/>");
+        }
+        protected void Page_Unload(object sender, EventArgs e)
+        {
+            //we can't use response because all the processing of form was completed before this step
+            // Response.Write("Page_PreRendercomplete" + "<br/>"); is of no use
+        }
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            Response.Write("Text Changed" + "<br/>");
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Clicked" + "<br/>");
+        }
+  ------------------Code ends for all things -------------------------------------------------------------
+
+Regard less how how we declare the methods for different events like page load , page preload and others, they will occur in the pre-fixed manner and the code is organized accordingly so, this is how the enter thing runs in the same serial order.
+Now lets run the app , we notice that if we don't submit anything to in the text box this is how the sequence of events look like
+Page_PreInit
+Page_Init
+Page_InitComplete
+Page_PreLoad
+Page_Load
+Page_LoadComplete
+Page_PreRender
+Page_PreRendercomplete
+and there is a validation error which occurs right next to the textbox
+now lets run the app  with the text box filled in and the response looks like 
+Page_PreInit
+Page_Init
+Page_InitComplete
+Page_PreLoad
+Page_Load
+Text Changed
+Button Clicked
+Page_LoadComplete
+Page_PreRender
+Page_PreRendercomplete
+
+so text changed and button clicked are control events so they occr between page load and page_load complete events
+PreInit, 
+INit 
+InitComplete,
+PreLoad
+Load
+Cached Events -- control level 
+PostBack Events -- control level
+LoadCompleten-- page level 
+PreRender -- page level
+PreRenderComplete -- page level
+Unload 
