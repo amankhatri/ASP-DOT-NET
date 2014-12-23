@@ -1,0 +1,88 @@
+IsPostBack is a page level property, that can be used to determine whether the page is being loaded in response to a client postback , or if it is being loaded and accessed for the first time.
+For the first time when we open a link it is not a postback event however anytime after this when we click the button it becomes postback event. A post back event is a page level event so all the webforms or pages which are created will have this property. PostBack is a boolean property which retuns true or false and is defined in class
+------------------------------Webform2 Code for Demoing Post back event - Webform2 -----------------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                Response.Write("Loading Page for the first time - is not a postback" + "<br/>");
+            }
+            else
+            {
+                Response.Write("This is a Post Back Event" + "<br/>");
+            }
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+---------------------------------End of code for demoing post back event --------------------------------------------------
+Real time Practical Explaination of Webform and post back events
+Everything in a Dropdown list is a collection of items in a list 
+----------------------------------Code for Webform2 Explaination of postback events and dropdownlist -----------------------
+public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+          
+            LoadCityDropDownList();
+        }
+        public void LoadCityDropDownList()
+        {
+            ListItem LI1 = new ListItem("London");
+            DropDownList1.Items.Add(LI1);
+            ListItem LI2 = new ListItem("Sydney");
+            DropDownList1.Items.Add(LI2);
+            ListItem LI3 = new ListItem("Mumbai");
+            DropDownList1.Items.Add(LI3);
+            ListItem LI4 = new ListItem("New York");
+            DropDownList1.Items.Add(LI4);
+
+        }
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+     --------------------------End of code for webform2 -------------------------------------------------------------------
+as we go the the link for localhost:port/webform2.aspx 
+Now if we select a city and then click register employee the list in the drop down menu duplicates itself, That is because of 
+We know that all ASP.NET server controls retain their state across postback. These Controls make use of ViewState. So, the first time, when the webform load, the cities get correctly added to the dropdownlist and sent back to the client. 
+Now when the client clicks the button control, and the webform is posted back to the server for processing. During the page initialization, viewstate restoration happens. During this stage, the city names are retrieved from the viewstate and are added to the DropDownList.
+PageLoad event happens later in the life cycle of the webform. During page load we are again adding another set of cities. Hence the duplication occurs
+To resolve this 
+1) We can use is postback property 
+ protected void Page_Load(object sender, EventArgs e)
+        {
+        	if(!IsPostBack) {
+        		LoadCityDropDownList();
+        	}
+            
+        }
+ 2) We can disable the viewstate of the dropdownlist controls. Issue with this approach, right click bring up properties and set enableviewstate to false.
+ 	a) DropDownList list, does not remember your selection across postback
+ 	b) DropDownlist events may not work correctly as expected, now if we disable the view state and add this
+ 	        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+        	Response.Write("Selected event changed");
+        }
+        and run the page and submit a city the SlectedIndexChanged doesn't get executed, that is because it can not be cached (type of control event) and hence doesn't work
+
+
+
+ 3) Another way do solve this, is to clear all the dropdownlist items, before calling LoadCityDropDownList() menthod. But this is not effecient from a performance perspective.
+  protected void Page_Load(object sender, EventArgs e)
+        {
+        	 DropDownList1.Items.Clear();   
+            LoadCityDropDownList();
+        }
