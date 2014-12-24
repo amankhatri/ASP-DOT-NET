@@ -1,0 +1,55 @@
+Radio BUtton Control is used when you want the user to select only one option from the available choices. For Example, the gender of a person. A person can be Male or Female. He can not be both. So, if te user as first selected Male, and if tries to select Female, the initial Male selection he made should automatically get de-selected. Another example would be when you want the user to select his or her favorite color. 
+We also have Radio Control List when you have several options to choose from. 
+Important Properties of the Radio Button Control
+Checked - This is a boolean property, that is used to check if the button is checked or not. , Returns true if the button is checked and false if it not checked. 
+Text - This is a string property used to get or set the text associated with the radio button .
+TextAllign - right or left. On which side of the radio button the text sould appear
+AutoPostBack - Set this property to true, if you want the webform to be posted imediately when the checked status of the radio button changes. 
+Group Name - By Default, the individual radio buttion selections, are not mutually exclusive. If you have a group of radio buttions, and if you want the selections among the group to be mutually exclusive, then use the same group name for all the radio button controls. These radio buttons are not talking to each other , so we would have to set the GRoupName property to be same for all three of the radio buttons. We will go to the properties of all three radio buttions and change the GroupName to GenderGroup
+
+Events associated with Radio Button 
+CheckedChanged - This event is fired when the checked status of the radio button control is changed, this event is cached in view state but if you want to it to be a postBackEvent set the autopostback property to true. In the code we can specify what happens if the radio selection is changed. This would let us select only one of the radio buttons
+
+HTML Code for getting a bordered box and radio buttons inside it
+----------------------------------- Begining of HTML Code for Radio Button in a box ----------------------------------------
+<fieldset style = "width:500px">
+        <legend><b>Select Gender</b></legend>
+        <br />
+        &nbsp;<asp:RadioButton ID="MaleRadioButton" runat="server" />
+&nbsp;&nbsp;
+        <asp:RadioButton ID="FemaleRadioButton" runat="server" />
+        &nbsp;&nbsp;
+        <asp:RadioButton ID="UnknownRadioButton" runat="server" />
+        <br />
+        <br />
+    
+    </fieldset>
+----------------------------------- End of HTML Code for Radio Button in a box -----------------------------------------
+
+------------------------------ Begining of webform1.aspx.cs code -------------------------------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void MaleRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            Response.Write("Male Radio Button Selection changed");
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            if (MaleRadioButton.Checked)
+            {
+                Response.Write("Male Button Checked" + "<br />");
+            }
+            if (FemaleRadioButton.Checked)
+            {
+                Response.Write("Female Button Checked" + "<br />");
+            }
+            if (UnknownRadioButton.Checked)
+            {
+                Response.Write("Unknown Gender Button Checked" + "<br />");
+            }
+        }
+----------------------------------End of Webform1.aspx.cs Code----------------------------------------------------------
