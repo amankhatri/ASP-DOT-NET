@@ -1,0 +1,38 @@
+Goals:
+To know what webserver is 
+if I need IIS to develop and text asp.net web applications
+how to check if IIS is installed
+installing IIS
+Configuring IIS server to run asp.net web application
+
+What is Webserver?
+In simple terms, a webserver is a software, that is used to deliver web pages to clients using HTTP. For example, IIS is a webserver that can be used to run asp.net web applications.
+
+Do you need IIS to develop and test asp.net we applications?
+No, Visiual Studio ships with a built in webserver. If you want to just build and test applications on your machine, you do not need an IIS. Built-in web server will not serve request to another computer. By default, visual studio uses the built in web server. 
+if you need to run ASP APP on server then you would have to point the url to the application
+
+How to check if IIS is installed
+1) Click on the windows start button
+2) type INETMGR in therun window.
+3) Clcik ok
+4) If you get IIS manager window, it is installed other wise it isnot
+
+How to install IIS?
+1) Clickon the start button and select control panel and then click on programs.
+2) Click on turn windows features on or off, uder programs and features options
+3) In the windows features, select Internet Information Serivices and related services.
+
+To configure a virtual directory in IIS to run asp.net web applications
+1) In the IIS Manager Window, double click on the iis server name in the connection section.
+2) Expand sites
+3) Right Click on Default Website, and select Add Applicaiton.
+4) Give an alias name. This  is the name you will use in the URL, when connecting to your web application
+5) Click thebutton next to the textbox under physical path. Select the physical web application folder.
+
+You can also create the virtual directory from visual studio, on the project properties window,
+1) Select Use Local IIS Web Server
+2) Project Url will be populated automatically. You can change the name of the virtual direcotyr if you wish to do so.
+3) Click create virtual Directory button.
+4) After a few seconds the virtual directory was success fully create message will appear.
+5) Click ok
