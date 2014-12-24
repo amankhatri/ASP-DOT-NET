@@ -1,0 +1,50 @@
+The textbox control is used to get the input from the user of the web application. An asp.net textbox has several properties, that we need to be aware of as a developer.
+
+Properties of a TextBox control
+1) TextMode Property - SingleLine, MultiLine and Password. 
+When you set the TextMode to multiline, use Rows property to control the number of lines to display for a multiline textbox.
+
+2) Text - Use this property to set or get the text from the TextBox. you can set the property at the design type or in the code
+
+3) MaxLength - THe maximum number of characters that a user can enter.
+
+4) ReadOnly - Set this property to true if you don't want the user to change the text in the Textbox.
+
+5) ToolTip - The tooltip is displayed when the mouse is over the control.
+
+6) Columns - Use this property to specify the width of the TextBox in charcters.
+
+7) Height - Set the height.
+
+8) Width - Set the Width 
+
+9) AutoPostBack - AutomaticPostback when text is changed. 
+
+There are events associated with textbox controls which can also be accessed via properties window. by clicking the electric bolt sign. the text changed event is used quite commanly and the drop down menu tells you when this event is fired. This event gets fired in three scenarios when textchanged, buttonclicked and pageload. By default it is cached event, which is textchanged. The webform1.aspx is related to the event handler by ontextchanged event , which can be seen in source mode of webform1.aspx
+-----------------------------------code for webform1.aspx.cs --------------------------------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+        	TextBox1.Focus();
+        }
+
+        protected void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            Response.Write("Text Changed");
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Hello" + TextBox1.Text);
+        }
+ -------------------------------- end code for webform1.aspx.cs--------------------------------------------------
+
+we can also set the autopostback to true in the webform1.aspx file or through property window. 
+Events of Text box
+1) Text Changed - This event is fired when the text is changed.
+Methods of a TextBox
+Focus - Set input focus onto the control. When we add TextBox1.Focus() , it automatically takes your cursor to that textbox, if you have more than wone TextBox.Focus, then the last textbox will get the focus. 
+
+To view the properties of the TextBox, Right click on the control and select properties. In the properties window, you can also find the events supported by the control.
+
+All these properties can be set at the design time, or at the runtime using code. 
+
