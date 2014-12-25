@@ -1,0 +1,35 @@
+The ASP.NET Hyperlink control is used to create a link to another webpage.
+
+Properties of HyperLink control
+Text: The link text that will be shown to the user
+Navigate URL: The url of the page to which the user will be sent,  this is most important that is where you specify the url of page. It is also possible to navigate to another page in your application using hyperinks, to do that just click the elipses button and it will show you all the pages associated with your application
+ImageURL: The URL of the image , that will be displayed for the link. If you specify both the Text and ImageURL, the image will be displayed instead of the text. If for some reason, the image is not unavailable, the text will be displayed. if image is not present then hyperlink text will appear on the webpage 
+Target: If target is not specified, the web page to which the hyperlink is linked, will be displayed in the same window. if you set the Target to_blank, the webpage will be opened in a new window. Target has several avaiable options like parent search top etc.
+
+Methods: 
+Focus(): Call this method to Set the input focus when the page loads, HyperLink.Focus 
+
+Events: No events specific to hyperlink control.
+
+~ means root dir
+
+--------------------------webform1.aspx.cs---------------------------------------------------
+ public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            HyperLink1.Focus();
+        }
+-------------------------webform1.aspx.cs ends --------------------------------------------------
+------------------------EMbedded HTML for webform1.aspx -----------------------------------
+<div>
+    
+        <asp:HyperLink ID="HyperLink1" runat="server" 
+            NavigateUrl="http://www.uab.edu/home/about" Target="_blank">UAB Home</asp:HyperLink>
+        <br />
+        <br />
+        <asp:HyperLink ID="HyperLink2" runat="server" ImageUrl="~/Images/imgres.jpg" 
+            NavigateUrl="https://www.facebook.com/">HyperLink</asp:HyperLink>
+    
+    </div>
+-----------------------end of code------------------------------------------------ 
