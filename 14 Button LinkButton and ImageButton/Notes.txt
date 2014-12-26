@@ -1,0 +1,82 @@
+The Button , LinkButton and ImageButton controls in ASP.net are used to post a page to the server. 
+1) Button: The Button Control is used to display a push button. Use the Text property to change the Text of the Button Control.
+2) LinkButton: LinkButton displays the button like a HyperLink. It only looks like a hyper link but it actually is used as just a simple button. Use the text property to change the LinkText.
+3) ImageButton: ImageButton provides the flexibility of associating an image with the button using the ImageURL property.
+----------------------------------code for webform1.aspx.cs to demo all the kinds of button --------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Submit Button Clicked");
+        }
+
+        protected void LinkButton1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Link Button Clicked");
+        }
+
+        protected void ImageButton1_Click(object sender, ImageClickEventArgs e)
+        {
+            Response.Write("Image Button Clicked");
+        }
+---------------------------------End of code for webform1.aspx.cs---------------------------------------------------
+----------------------------------begining of code for webform1.aspx----------------------------------------------
+ <div style="height: 183px">
+    
+        <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Submit" />
+        <br />
+        <br />
+        <asp:LinkButton ID="LinkButton1" runat="server" onclick="LinkButton1_Click">SubmitLinkButton</asp:LinkButton>
+        <br />
+        <asp:ImageButton ID="ImageButton1" runat="server" Height="50px" 
+            ImageUrl="~/Images/Submit.jpg" style="margin-top: 324px" Width="50px" 
+            onclick="ImageButton1_Click" />
+    </div>
+---------------------------------end of code for webform1.aspx ---------------------------------------------------
+One of the important properties of these 3 buttons is onclick client property . We can use this property to associate javascript we want to run in response to button click. We know that when a button is clicked in general, there would be a post back event, also we know that client is a browser. Now, the button click event occurs on cilent and the server (postback on server) so in response to the click event we can do some processing on client using java script.
+The java script can be written in the property of anybutton , the name of the property is OnClientClick 
+-----------------------------------Begining of code for webform2 Javascript.aspx----------------------------------
+    <div>
+        <asp:Button ID="Button1" runat="server" Text="Submit" onclick="Button1_Click" 
+            onclientclick="alert('You are about to submit this page')" />
+        <br />
+        <br />
+        <asp:Button ID="Button2" runat="server" onclick="Button2_Click" 
+            Text="Confirm"
+            onclientclick= "return confirm('Are you sure if you want to submit')" />
+        <br />
+    </div>
+------------------------------------End of code for webform2 javasctipt.aspx -------------------------------------
+This code is writtenin OnClientClick property of the button, you can also write this code in the aspx file. 
+since java script is on client, when you click the button, it pops up the alert before post back happens 
+then it does a post back and we get a reposnce from webfrom2 javascript.aspx.cs file. It is also possible to cancel a postback using javascript by using confirm function of java script.
+Confirm button brings up a dialog box which has ok and cancel on it, when we click okay confirm is set to true and clicking cancel sets confirm to false. if the confirm is ture or false, we would have to return it to browser for submittion or canceling the postback
+---------------------code for webform2 javascript.aspx.cs-----------------------------------------------------------
+  protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Form Submitted");
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            Response.Write("Submit Confirmed");
+        }
+----------------------End of code for webform2 javascript.aspx.cs------------------------------------------------
+
+
+
+Properties which are to be discussed later
+1) CommandName
+2) CommandArgument
+3) CuasesValidation
+4) ValidationGroup
+5) PostBackURL
+
