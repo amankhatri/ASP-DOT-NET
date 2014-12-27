@@ -1,0 +1,124 @@
+Command Event :
+ASP.net button control exposes 2 events - Click and Command events. we already know about click event from commit 14.  IN this commit we will discuss about the commandevent. When the button is clicked, both the events are raised. Click event happens before the command event. 
+Note: EventHandlers can be associated to the events of control in 2 ways.
+1) Declaratively at design time in te HTML like this (webform1.aspx)
+<asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Button" />
+
+2) Programatically using delegates.
+
+----------------------------------------Declaratively----------------------------------------------------------
+When we double click the button on webform1.aspx, an event handler is generated , this event handler is tied to the webform1.aspx.cs file via <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Button" /> in html source code. 
+Now to get how to get event handler for the commandevent for this button : 
+To find all the events related to a button is:
+1) By clicking on power  or lighting bolt in properties window. NOw we wil see the list of events associated with the button, just double click the event you want to generate code for and it would show up in the webform1.aspx.cs file. It also adds and oncommand attribute in html file ie. webform1.aspx 
+ <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+            oncommand="Button1_Command" Text="Button" />
+2)  The other way to find the events is using code. if we look at the button control, we type in the class name dot then all the options associated with that class pop up and the options with lighting symbol in from of them are events associated with that class.
+We are letting the program on the server know how to behave when certain button is pressed by using onclick attribute in html code  which is doing things declaratively 
+---------------------------------------Code for Declarative Webform1.aspx.cs-----------------------------------------
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            
+
+        }
+        //This is event handler
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Click Event" + "<br />");
+        }
+
+        protected void Button1_Command(object sender, CommandEventArgs e)
+        {
+            Response.Write(" Button Command Event" + "<br />");
+        }
+-----------------------------------------Code for Declarative webform1.aspx------------------------------------------------
+	<div>
+    
+        <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+            oncommand="Button1_Command" Text="Button" />
+    
+    </div>
+------------------------------------End of Explaination for Declarative -----------------------------------------------
+
+-----------------------------------Begining of Explaination for Programmatical Association Webform2.aspx.cs-----------------
+
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            //programmatic association of aspx to event handlers using Delegates,
+            /*EventHandler is a delgate now event handler knows that it has to call Button1_click 
+             method which is an event handler. */
+            Button1.Click += new EventHandler(Button1_Click);
+            Button1.Command += new CommandEventHandler(Button1_Command);
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            Response.Write("Button Click Event" + "<br />");
+        }
+
+        protected void Button1_Command(object sender, CommandEventArgs e)
+        {
+            Response.Write("Button Command Event" + "<br />");
+        }
+ ----------------------------------End of Explaination for Programmatical Association of events ----------------------------
+ We use commandEvent when:
+If you have multiple button controls on a webform, and if you want to programmatically determine which button control is clicked, we can make use of Command event, along with CommandName and CommandArgument properties.
+   <asp:Button ID="Bottom10Button" runat="server" Text="Show Bottom 10 Employees" 
+            oncommand="CommandButton_Click" CommandName="Show" CommandArgument="Bottom10" 
+            onclick="Bottom10Button_Click"  />
+oncommand == tells which event handler to call
+commandname = it is just the name of the command, 
+commandArguments =
+so when we click any of the buttons , oncommad attribute in the html code specifies to call CommandButton_Click method from cs file
+CommandButton_Click method is taking two arguments one of them is type object, and another one is CommandEventArgs and CommandEventArgs class has two methods associated with it one of them is commandname and another one is commandArgument and we are specifiying those in the html code. , when I clcick the button the event handler is fired and commandname and commandargument is post back and we use code in .cs file (When to use commandEvent.cs). Notce that we have same command name for Bttom10Button and Top10Button, so we use CommandArgument method of CommandEventArgs, however CommandArgument method returns an object which we convert to string by using  CommandArgument.ToString().
+
+------------------------------------------------code for When to use CommandEvent.aspx.------------------------------------
+<div>
+    <asp:Button ID="PrintButton" runat="server" Text="Print" 
+            oncommand="CommandButton_Click" CommandName="Print" 
+              />
+    <asp:Button ID="DeletButton" runat="server" Text="DeleteButton" 
+            oncommand="CommandButton_Click" CommandName="Delete" 
+              />
+    <asp:Button ID="Top10Button" runat="server" Text="Show Top 10 Employees" 
+            oncommand="CommandButton_Click" CommandName="Show" CommandArgument="TOP10" 
+              />
+    <asp:Button ID="Bottom10Button" runat="server" Text="Show Bottom 10 Employees" 
+            oncommand="CommandButton_Click" CommandName="Show" CommandArgument="Bottom10" 
+            />
+    <asp:Label ID = "OutputLabel" runat="server"></asp:Label>
+    </div>
+------------------------------------------------End of code for when to use CommandEvent.aspx------------------------------
+------------------------------------------------Code for When to use CommandEvent.cs---------------------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void CommandButton_Click(object sender, CommandEventArgs e)
+        {
+            switch (e.CommandName)
+            {
+                case "Print":
+                    OutputLabel.Text = "You Clicked Print Button";
+                    break;
+                case "Delete":
+                    OutputLabel.Text = "You Clicked Button";
+                    break;
+                case "Show":
+                    if (e.CommandName.ToString() == "TOP10")
+                    { OutputLabel.Text = "You Clicked Show Top 10 Employees Button"; }
+                    else 
+                    { OutputLabel.Text = "You Clicked Show Bottom 10 Employees Button"; }
+                    break;
+                default:
+                    OutputLabel.Text = "We don't know which button you clicked";
+                    break;
+
+            }
+        }
+------------------------------------------------Event of Code for when to use commandEvent.cs------------------------------
+Why to use them.
+
+Command event, makes it possible to have a single event handler method responding to the click event of multple buttons. The command event, CommandName and CommandArgument properties are extremly useful when working with data-bound controls like Repeater, GridView, DataList. All the 3 button controls expose Command event, the CommandName and CommandArgument properties.
