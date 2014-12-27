@@ -1,0 +1,49 @@
+Goals: 
+1) Adding items to the DropDownList control at design time using the HTML (using properties)
+2) Adding items to the DropDownList Control at runtime using the code.
+
+DropDownList
+1) DropDownList is a collection of ListItem objects and you can only select one item at a time. we can also use radio button list for the same purpose. However, as the list grows amount of space required by radio button list increases. 
+2) The ListItems can be added to the DropDownList at the design time or at the runtime, by clicking on properties window and add items through Items attribute, which is a collection property. DropDownList is a collection of ListItem objects. 
+Now if we click on the elipses in the Item property, we can add stuff to our list, and each ListItem has Text and Value property. Text is the text associated with the text of list item which appears in list and the value is stored in data base. Usually value stores the id associated with the dropdownlist item in the data base. id is usally integer, it can be test. You can retrieve the value of dropdownlist by using selectedvalue property of dropdownlist. 
+This is how it looks like in HTML code 
+<asp:DropDownList ID="DropDownList1" runat="server">
+            <asp:ListItem Value="1">Male</asp:ListItem>
+            <asp:ListItem Value="2">Female</asp:ListItem>
+        </asp:DropDownList>
+instead of doing <asp:ListItem Value="1">Male</asp:ListItem> you can also do <asp:ListItem Value="1" Text="Male"</asp:ListItem>
+3) If you want a specific ListItem to be selected in the DropDownList, set the Selected property of the ListItem object to true.  for example: 
+ <asp:ListItem Value="2" Selected = "True">Female</asp:ListItem>
+4) To hide a ListItem in the DropDownList, set the Enabled property to false, which means that option will not be shown in the property.
+<asp:ListItem Value="2" Enabled="false">Female</asp:ListItem>. we can also do this by using property window. 
+----------------------------------- Code for Webform1.aspx (1,2,3)---------------------------------------------------------- <div>
+    
+        <asp:DropDownList ID="DropDownList1" runat="server">
+            <asp:ListItem Value="1">Male</asp:ListItem>
+            <asp:ListItem Value="2" Selected = "True">Female</asp:ListItem>
+        </asp:DropDownList>
+    
+    </div>
+------------------------------ End of code for Webform1.aspx-----------------------------------------------------------
+5) if you are adding ListItem objects, to te DropDownList in te Page_Load event, make sure you do only wen te page is loaded for te first time. Otherwise, everytime, yoou post the page back, by clicking a button, the ListItems will be added again causing duplication. 
+
+If I have to add DropDownList using code I would have to :
+	1) Add a dropdownist in aspx file in design and then in .cs file do steps 2 and 3:
+	2) Create instance of ListItem objects and 
+	3) Add the items to the List using the methods associated with ListItems.
+When we add items using code, we add items during pageload. However, when I click the button and postback happens, the pageload event gets fired again and the list duplicates itself. so we should clear the the list before each case or we have a condition (!IsPostBack)
+---------------------------------------Code for Adding DropDownList using code.aspx.cs -------------------------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                ListItem maleListItem = new ListItem("Male", "1");
+                ListItem femaleListItem = new ListItem("Female", "2");
+                DropDownList1.Items.Add(maleListItem);
+                DropDownList1.Items.Add(femaleListItem);
+            }
+        }
+ --------------------------------------End of code--------------------------------------------------------------
+
+A DropDownList is a collection of ListItem objects. Along the same lines, the following controls are also a collection of ListItem Objects. So, adding items to these controls is also very similar to DropDowList.
+Type of List CheckBoxList, RadioButtonList, BulletedList, ListBox
