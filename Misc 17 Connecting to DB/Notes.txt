@@ -1,0 +1,43 @@
+Goal:
+Binding data from a database table, to a dropdownlist. use one of them, I prefer webform.aspx.cs
+---- here is what we do in XML file
+configuration>
+    <connectionStrings>
+        <add name="DB_L17ConnectionString" connectionString="Data Source=KHATRI\MSSQLSERVER2;Initial Catalog=DB_L17;User ID=sa;Password=2059794842"
+            providerName="System.Data.SqlClient" />
+    </connectionStrings>
+    <system.web>
+        <compilation debug="true" targetFramework="4.0" />
+    </system.web>
+
+</configuration>
+
+---- and here is what we do in webform.aspx.cs file---------
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            /*Connection string is the name of the database and the user name and stuff
+            this connection string is then supplied to sqlconnection class
+             connectionString = "data source=nameof the data base or if it is on local machine type '."; 
+             * database = nameof database; user id = sa; password = password for windows authentications
+             * you do 
+             * connectionString = data source=nameof the data base or if it is on local machine type '."; 
+             * database = nameof database; integrated security=sspi , connectionstring is key value pair"*/
+             string connectionString = "data source=khatri\\mssqlserver2 ;database = DB_L17; user id=sa; password=2059794842";
+            //string connectionString = "data source=.;database = DB_L17; integrated security=SSPI";
+            SqlConnection conn = new SqlConnection(connectionString);
+            /*or you can do SqlConnection conn = new SqlConnection()
+             conn.ConnectionString = connectionString*/
+            
+            /*now we need sql command which we are executing , and we have to specify which connection to use*/
+            SqlCommand cmd = new SqlCommand("Select CityId, CityName, Country from tblCity", conn);
+            /*we need to open connection*/
+            conn.Open();
+            /*now we will execute the command and set it to the datasouce property of gridview*/
+            GridView1.DataSource = cmd.ExecuteReader();
+           // DropDownList1.DataSource = cmd.ExecuteReader();
+            /*then bind the data */
+            GridView1.DataBind();
+          //  DropDownList1.DataBind();
+
+
+        }
