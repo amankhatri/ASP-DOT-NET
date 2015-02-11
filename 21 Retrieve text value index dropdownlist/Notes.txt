@@ -1,0 +1,59 @@
+DropDownList is a listItem Collection object
+/*Every item in the list has a id associated with list item, */
+
+webform1.aspx HTML 
+        <asp:DropDownList ID="DropDownList1" runat="server" 
+            onselectedindexchanged="DropDownList1_SelectedIndexChanged">
+            <asp:ListItem Text="Select Continent" Value= "-1"></asp:ListItem> //id = 0
+            <!--<asp:ListItem Text="Asia" Selected="True" Value = "1"></asp:ListItem> --> //setting default value in list
+            <asp:ListItem Text="Asia" Value = "1"></asp:ListItem> //Id = 1
+            <asp:ListItem Text="Europe" Value = "2"></asp:ListItem>
+            <asp:ListItem Text="Africa" Value = "3"></asp:ListItem>
+            <asp:ListItem Text="North America" Value = "4"></asp:ListItem>
+            <asp:ListItem Text="South America" Value = "5"></asp:ListItem>
+            
+        </asp:DropDownList>
+       
+    
+To retrieve :
+Selected Item Text: DropDownList1.Selectedtem.Text
+Selected Item Value: DropDownList1.SelectedItem.Value
+			OR
+Selected Item Value: DropDownList1.SelectedValue
+Selected Item Index: DropDownList1.SelectedIndex
+
+The SelectedIndex and SelectedValue properties of the DropDownList can also be used to have a list item selected in the DropDownList.
+
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                /*Default Selection in dropdownLIst. The default collection should always occur in if condition
+                 because if it is a post back it will again display the same condition*/
+                DropDownList1.SelectedIndex = 1;
+                /*or you can do DropDownList1.SelectedValue = "1"*/
+            }
+
+        }
+
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+            
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            if (DropDownList1.SelectedValue == "-1")
+            {
+                Response.Write("Please Make a selection");
+            }
+            else{
+                Response.Write("Text " + DropDownList1.SelectedItem.Text+ " <br/>");
+                Response.Write("Value " + DropDownList1.SelectedItem.Value+ " <br/>");
+                Response.Write("ID or Index " + DropDownList1.SelectedIndex+ " <br/>");
+               
+            }
+
+        }
+    }
