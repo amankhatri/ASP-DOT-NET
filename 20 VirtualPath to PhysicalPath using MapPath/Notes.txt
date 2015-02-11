@@ -1,0 +1,12 @@
+/*Server.MapPath() returns the physical path for a given virtual path. This method can be used in serveral different ways,
+depending on the characters that we use in the virtual path.
+
+Server.MapPath(".") -- gives current physical directory of the page that you are running. 
+Server.MapPath("..")-- Parent physical directory of the page that you are running
+Server.MapPath("~") -- The physical path of the root directory of the application
+
+Tilde ~ symbol resolves to the root application directory, no matter how deep you are in the folder hiearchy. This is the advantage of using ~ over .. . The following code would work from any folder in your application 
+DS.ReadXml(Server.MapPath("~/Data/Countries/Countries.xml"))
+
+Whereas, the following code will only work from folders, that are 2 levels deeper relative to the root directory of the application. 
+DS.ReadXml("../..Data/Countries/Countries.xml")*/
