@@ -21,7 +21,7 @@ namespace _10_TextBox_Control
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            Response.Write("Hello" + TextBox1.Text);
+            Response.Write("Namaste" + TextBox1.Text);
         }
     }
 }
